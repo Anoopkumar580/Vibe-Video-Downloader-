@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeDownloader | Download Videos, Audio & Reels</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f8fafc;
+            --gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 24px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 3rem;
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-bottom: 25px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-section {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .input-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .url-input {
+            width: 100%;
+            padding: 18px 20px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .platforms {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .platform {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .platform:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .platform.active {
+            background: var(--gradient);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .download-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .option-card {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .option-card.active {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--primary);
+        }
+        
+        .option-card i {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .download-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+        
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        
+        .download-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .output-section {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .output-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .preview-container {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .preview-placeholder {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+        
+        .preview-content {
+            width: 100%;
+            display: none;
+        }
+        
+        .preview-thumbnail {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            max-height: 200px;
+            object-fit: cover;
+        }
+        
+        .preview-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #e2e8f0;
+        }
+        
+        .preview-duration {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .history {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .history h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #e2e8f0;
+        }
+        
+        .history-list {
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            padding: 12px 15px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        
+        .history-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .history-item-title {
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            max-width: 70%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .history-item-type {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 30px;
+        }
+        
+        .instructions {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .instructions h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .step {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: var(--gradient);
+            border-radius: 50%;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert.success {
+            background: rgba(16, 185, 129, 0.2);
+            border-left: 4px solid var(--success);
+            color: #a7f3d0;
+        }
+        
+        .alert.error {
+            background: rgba(239, 68, 68, 0.2);
+            border-left: 4px solid var(--danger);
+            color: #fecaca;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: rotate(30deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-palette"></i>
+    </div>
+    
+    <div class="container">
+        <header>
+            <h1 class="logo"><i class="fas fa-download"></i> VibeDownloader</h1>
+            <p class="tagline">Download videos, audio, and reels from popular platforms with ease</p>
+        </header>
+        
+        <div class="alert" id="alert"></div>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2><i class="fas fa-link"></i> Enter Video URL</h2>
+                <input type="url" class="url-input" id="urlInput" placeholder="Paste video URL here (YouTube, Instagram, TikTok, Twitter, etc.)">
+                
+                <div class="platforms">
+                    <div class="platform active" data-platform="all">
+                        <i class="fas fa-globe"></i>
+                        <span>All Platforms</span>
+                    </div>
+                    <div class="platform" data-platform="youtube">
+                        <i class="fab fa-youtube"></i>
+                        <span>YouTube</span>
+                    </div>
+                    <div class="platform" data-platform="instagram">
+                        <i class="fab fa-instagram"></i>
+                        <span>Instagram</span>
+                    </div>
+                    <div class="platform" data-platform="tiktok">
+                        <i class="fab fa-tiktok"></i>
+                        <span>TikTok</span>
+                    </div>
+                    <div class="platform" data-platform="twitter">
+                        <i class="fab fa-twitter"></i>
+                        <span>Twitter</span>
+                    </div>
+                </div>
+                
+                <h2><i class="fas fa-cogs"></i> Download Options</h2>
+                <div class="download-options">
+                    <div class="option-card active" data-option="video">
+                        <i class="fas fa-film"></i>
+                        <h3>Video</h3>
+                        <p>Best quality video</p>
+                    </div>
+                    <div class="option-card" data-option="audio">
+                        <i class="fas fa-music"></i>
+                        <h3>Audio Only</h3>
+                        <p>MP3 format</p>
+                    </div>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Processing your request...</p>
+                </div>
+                
+                <button class="download-btn" id="downloadBtn">
+                    <i class="fas fa-download"></i>
+                    Download Now
+                </button>
+            </div>
+            
+            <div class="output-section">
+                <h2><i class="fas fa-eye"></i> Preview</h2>
+                <div class="preview-container">
+                    <div class="preview-placeholder" id="previewPlaceholder">
+                        <i class="fas fa-play-circle" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <p>Preview will appear here after entering a URL</p>
+                    </div>
+                    <div class="preview-content" id="previewContent">
+                        <img class="preview-thumbnail" id="previewThumbnail" src="" alt="Video thumbnail">
+                        <h3 class="preview-title" id="previewTitle"></h3>
+                        <p class="preview-duration" id="previewDuration"></p>
+                    </div>
+                </div>
+                
+                <div class="history">
+                    <h3><i class="fas fa-history"></i> Recent Downloads</h3>
+                    <ul class="history-list" id="historyList">
+                        <!-- History items will be added here dynamically -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> How to Use</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Copy Video URL</h4>
+                    <p>Go to YouTube, Instagram, TikTok, or other supported platforms and copy the video URL.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Paste URL</h4>
+                    <p>Paste the URL into the input field above and select your preferred platform.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Choose Format</h4>
+                    <p>Select whether you want to download video or audio only.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Download</h4>
+                    <p>Click the download button and wait for the file to be prepared.</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>VibeDownloader &copy; 2023 | This tool is for personal use only. Please respect content creators' rights.</p>
+            <p style="margin-top: 10px; font-size: 0.8rem; color: #64748b;">
+                Note: This is a frontend demo. For actual downloads, you need a backend service.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const urlInput = document.getElementById('urlInput');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const platformElements = document.querySelectorAll('.platform');
+        const optionCards = document.querySelectorAll('.option-card');
+        const alertBox = document.getElementById('alert');
+        const loading = document.getElementById('loading');
+        const previewPlaceholder = document.getElementById('previewPlaceholder');
+        const previewContent = document.getElementById('previewContent');
+        const previewThumbnail = document.getElementById('previewThumbnail');
+        const previewTitle = document.getElementById('previewTitle');
+        const previewDuration = document.getElementById('previewDuration');
+        const historyList = document.getElementById('historyList');
+        const themeToggle = document.getElementById('themeToggle');
+        
+        // State
+        let selectedPlatform = 'all';
+        let selectedOption = 'video';
+        let downloadHistory = JSON.parse(localStorage.getItem('downloadHistory')) || [];
+        
+        // Initialize
+        renderHistory();
+        
+        // Event Listeners
+        platformElements.forEach(platform => {
+            platform.addEventListener('click', () => {
+                platformElements.forEach(p => p.classList.remove('active'));
+                platform.classList.add('active');
+                selectedPlatform = platform.dataset.platform;
+            });
+        });
+        
+        optionCards.forEach(card => {
+            card.addEventListener('click', () => {
+                optionCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                selectedOption = card.dataset.option;
+            });
+        });
+        
+        urlInput.addEventListener('input', () => {
+            const url = urlInput.value.trim();
+            if (isValidUrl(url)) {
+                showPreview(url);
+            } else {
+                resetPreview();
+            }
+        });
+        
+        downloadBtn.addEventListener('click', startDownload);
+        
+        themeToggle.addEventListener('click', () => {
+            // Generate a random gra
